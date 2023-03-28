@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+// Program version = 0.0.1-alpha
+// File version = 0.0.1.01
+
 namespace tic_tac_toe
 {
     internal static class Program
@@ -16,7 +19,7 @@ namespace tic_tac_toe
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new Form1("0.0.1-alpha"));
         }
     }
 }
