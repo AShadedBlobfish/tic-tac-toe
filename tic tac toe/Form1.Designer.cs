@@ -1,4 +1,4 @@
-﻿// Program version = 0.0.1-alpha
+﻿// Program version = 0.0.1
 
 namespace tic_tac_toe
 {
@@ -275,11 +275,11 @@ namespace tic_tac_toe
             this.lbl_version.AutoSize = true;
             this.lbl_version.Font = new System.Drawing.Font("Courier New", 7F);
             this.lbl_version.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.lbl_version.Location = new System.Drawing.Point(428, 384);
+            this.lbl_version.Location = new System.Drawing.Point(444, 384);
             this.lbl_version.Name = "lbl_version";
-            this.lbl_version.Size = new System.Drawing.Size(125, 12);
+            this.lbl_version.Size = new System.Drawing.Size(89, 12);
             this.lbl_version.TabIndex = 9;
-            this.lbl_version.Text = "Version: x.x.x-xxxxx";
+            this.lbl_version.Text = "Version: x.x.x";
             // 
             // Form1
             // 
