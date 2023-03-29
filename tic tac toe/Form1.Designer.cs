@@ -49,6 +49,7 @@ namespace tic_tac_toe
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
+            this.lbl_version = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -213,17 +214,17 @@ namespace tic_tac_toe
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Berlin Sans FB", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(423, 277);
+            this.label3.Location = new System.Drawing.Point(423, 232);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(66, 26);
+            this.label3.Size = new System.Drawing.Size(61, 26);
             this.label3.TabIndex = 3;
-            this.label3.Text = "Wins:";
+            this.label3.Text = "Wins";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Berlin Sans FB", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(407, 317);
+            this.label4.Location = new System.Drawing.Point(417, 280);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(65, 18);
             this.label4.TabIndex = 4;
@@ -233,7 +234,7 @@ namespace tic_tac_toe
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Berlin Sans FB", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(519, 317);
+            this.label5.Location = new System.Drawing.Point(506, 280);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(57, 18);
             this.label5.TabIndex = 5;
@@ -242,31 +243,43 @@ namespace tic_tac_toe
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Unispace", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(423, 345);
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(433, 308);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(28, 29);
+            this.label6.Size = new System.Drawing.Size(27, 29);
             this.label6.TabIndex = 6;
             this.label6.Text = "0";
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Unispace", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(533, 345);
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(520, 308);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(28, 29);
+            this.label7.Size = new System.Drawing.Size(27, 29);
             this.label7.TabIndex = 7;
             this.label7.Text = "0";
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(507, 277);
+            this.button1.Location = new System.Drawing.Point(507, 232);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(51, 27);
             this.button1.TabIndex = 8;
             this.button1.Text = "Reset";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // lbl_version
+            // 
+            this.lbl_version.AutoSize = true;
+            this.lbl_version.Font = new System.Drawing.Font("Courier New", 7F);
+            this.lbl_version.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.lbl_version.Location = new System.Drawing.Point(428, 384);
+            this.lbl_version.Name = "lbl_version";
+            this.lbl_version.Size = new System.Drawing.Size(125, 12);
+            this.lbl_version.TabIndex = 9;
+            this.lbl_version.Text = "Version: x.x.x-xxxxx";
             // 
             // Form1
             // 
@@ -274,6 +287,7 @@ namespace tic_tac_toe
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(584, 398);
+            this.Controls.Add(this.lbl_version);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
@@ -315,6 +329,7 @@ namespace tic_tac_toe
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label lbl_version;
     }
 }
 
