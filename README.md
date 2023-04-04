@@ -1,7 +1,7 @@
 # tic tac toe
 -------------------------------------------------------------------------------------------------------------------
 
-A simple tic tac toe game
+A simple two-player tic tac toe game
 
 Currently there is no singleplayer/ai mode but there may be in the future
 
