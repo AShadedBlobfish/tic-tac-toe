@@ -25,6 +25,7 @@ namespace tic_tac_toe
         Point location2 = new Point(454, 70);
         List<Button> player_locations = new List<Button>();
         List<Button> ai_locations = new List<Button>();
+        List<Button> filled = new List<Button>();
         bool ai = false;
         bool hard_ai = true;
 
@@ -47,6 +48,10 @@ namespace tic_tac_toe
             label2.ForeColor = Color.Crimson;
             label2.Location = location1;
             lbl_version.Text = "Version: " + version;
+            Form3 settings = new Form3();
+            settings.ShowDialog();
+            ai = settings.ai;
+            hard_ai = settings.hardai;
         }
 
         // Function to determine whether a player has won
@@ -130,6 +135,7 @@ namespace tic_tac_toe
                     label2.ForeColor = Color.MediumBlue;
                     label2.Text = "O";
                     player_locations.Add(btn);
+                    filled.Add(btn);
                 }
                 else if (!ai)
                 {
@@ -140,73 +146,141 @@ namespace tic_tac_toe
                     label2.ForeColor = Color.Crimson;
                     label2.Text = "X";
                 }
-            }
 
-            char winner = win();
+                char winner = win();
 
-            if (winner != '0')
-            {
-                label2.Text = "";
-                Form2 win_msg = new Form2(winner);
-                win_msg.ShowDialog();
+                if (winner != '0')
+                {
+                    label2.Text = "";
+                    Form2 win_msg = new Form2(winner);
+                    win_msg.ShowDialog();
 
-                // Resetting the game
-                foreach (Button button in panel1.Controls)
-                {
-                    button.Text = "";
-                    button.TabStop = false;
-                    button.FlatStyle = FlatStyle.Flat;
-                    button.FlatAppearance.BorderSize = 0;
-                    button.Font = new Font("Segoe UI", 48F);
+                    // Resetting the game
+                    foreach (Button button in panel1.Controls)
+                    {
+                        button.Text = "";
+                        button.TabStop = false;
+                        button.FlatStyle = FlatStyle.Flat;
+                        button.FlatAppearance.BorderSize = 0;
+                        button.Font = new Font("Segoe UI", 48F);
+                    }
+                    label2.Text = "X";
+                    label2.ForeColor = Color.Crimson;
+                    label2.Location = location1;
+                    if (winner == 'X')
+                    {
+                        x_wins++;
+                    }
+                    else if (winner == 'O')
+                    {
+                        o_wins++;
+                    }
+                    label6.Text = Convert.ToString(o_wins);
+                    label7.Text = Convert.ToString(x_wins);
+                    turn = 0;
+                    player_locations.Clear();
+                    ai_locations.Clear();
+                    filled.Clear();
                 }
-                label2.Text = "X";
-                label2.ForeColor = Color.Crimson;
-                label2.Location = location1;
-                if (winner == 'X')
+                else if (draw())
                 {
-                    x_wins++;
-                }
-                else if (winner == 'O')
-                {
-                    o_wins++;
-                }
-                label6.Text = Convert.ToString(o_wins);
-                label7.Text = Convert.ToString(x_wins);
-                turn = 0;
-            }
-            else if (draw())
-            {
-                label2.Text = "";
-                Form2 win_msg = new Form2('0');
-                win_msg.ShowDialog();
+                    label2.Text = "";
+                    Form2 win_msg = new Form2('0');
+                    win_msg.ShowDialog();
 
-                // Resetting the game
-                foreach (Button button in panel1.Controls)
-                {
-                    button.Text = "";
-                    button.TabStop = false;
-                    button.FlatStyle = FlatStyle.Flat;
-                    button.FlatAppearance.BorderSize = 0;
-                    button.Font = new Font("Segoe UI", 48F);
+                    // Resetting the game
+                    foreach (Button button in panel1.Controls)
+                    {
+                        button.Text = "";
+                        button.TabStop = false;
+                        button.FlatStyle = FlatStyle.Flat;
+                        button.FlatAppearance.BorderSize = 0;
+                        button.Font = new Font("Segoe UI", 48F);
+                    }
+                    label2.Text = "X";
+                    label2.ForeColor = Color.Crimson;
+                    label2.Location = location1;
+                    label6.Text = Convert.ToString(o_wins);
+                    label7.Text = Convert.ToString(x_wins);
+                    turn = 0;
+                    player_locations.Clear();
+                    ai_locations.Clear();
+                    filled.Clear();
                 }
-                label2.Text = "X";
-                label2.ForeColor = Color.Crimson;
-                label2.Location = location1;
-                label6.Text = Convert.ToString(o_wins);
-                label7.Text = Convert.ToString(x_wins);
-                turn = 0;
-            }
-            if (ai)
-            {
-                turn++;
-                Button ai_square = ai_move();
-                System.Threading.Thread.Sleep(500);
-                ai_square.ForeColor = Color.MediumBlue;
-                ai_square.Text = "O";
-                label2.Location = location1;
-                label2.ForeColor = Color.Crimson;
-                label2.Text = "X";
-                ai_locations.Add(ai_square);
+                else if (!draw() && ai)
+                {
+                    Button ai_square = ai_move();
+                    //System.Threading.Thread.Sleep(500);
+                    ai_square.ForeColor = Color.MediumBlue;
+                    ai_square.Text = "O";
+                    label2.Location = location1;
+                    label2.ForeColor = Color.Crimson;
+                    label2.Text = "X";
+                    ai_locations.Add(ai_square);
+                    filled.Add(ai_square);
+                    turn++;
+                }
+
+                winner = win();
+
+                if (winner != '0')
+                {
+                    label2.Text = "";
+                    Form2 win_msg = new Form2(winner);
+                    win_msg.ShowDialog();
+
+                    // Resetting the game
+                    foreach (Button button in panel1.Controls)
+                    {
+                        button.Text = "";
+                        button.TabStop = false;
+                        button.FlatStyle = FlatStyle.Flat;
+                        button.FlatAppearance.BorderSize = 0;
+                        button.Font = new Font("Segoe UI", 48F);
+                    }
+                    label2.Text = "X";
+                    label2.ForeColor = Color.Crimson;
+                    label2.Location = location1;
+                    if (winner == 'X')
+                    {
+                        x_wins++;
+                    }
+                    else if (winner == 'O')
+                    {
+                        o_wins++;
+                    }
+                    label6.Text = Convert.ToString(o_wins);
+                    label7.Text = Convert.ToString(x_wins);
+                    turn = 0;
+                    player_locations.Clear();
+                    ai_locations.Clear();
+                    filled.Clear();
+                }
+                else if (draw())
+                {
+                    label2.Text = "";
+                    Form2 win_msg = new Form2('0');
+                    win_msg.ShowDialog();
+
+                    // Resetting the game
+                    foreach (Button button in panel1.Controls)
+                    {
+                        button.Text = "";
+                        button.TabStop = false;
+                        button.FlatStyle = FlatStyle.Flat;
+                        button.FlatAppearance.BorderSize = 0;
+                        button.Font = new Font("Segoe UI", 48F);
+                    }
+                    label2.Text = "X";
+                    label2.ForeColor = Color.Crimson;
+                    label2.Location = location1;
+                    label6.Text = Convert.ToString(o_wins);
+                    label7.Text = Convert.ToString(x_wins);
+                    turn = 0;
+                    player_locations.Clear();
+                    ai_locations.Clear();
+                    filled.Clear();
+                }
             }
         }
 
@@ -244,164 +318,349 @@ namespace tic_tac_toe
         #region AI
         private Button ai_move()
         {
-            // Note - Wow I really hate this
+            // Note - Wow I *really* hate this
 
             // Hard AI (Always Counters, Always goes for Wins)
             if (hard_ai)
             {
-                /// Horizontal Counters ///
-                // Right Side
-                if (player_locations.Contains(sq_top_left) && player_locations.Contains(sq_top_mid) && !ai_locations.Contains(sq_top_right))
-                {
-                    return sq_top_right;
-                }
-                else if (player_locations.Contains(sq_mid_left) && player_locations.Contains(sq_mid) && !ai_locations.Contains(sq_mid_right))
-                {
-                    return sq_mid_right;
-                }
-                else if (player_locations.Contains(sq_bot_left) && player_locations.Contains(sq_bot_mid) && !ai_locations.Contains(sq_bot_right))
-                {
-                    return sq_bot_right;
-                }
-                // Left side
-                else if (player_locations.Contains(sq_top_mid) && player_locations.Contains(sq_top_right) && !ai_locations.Contains(sq_top_left))
-                {
-                    return sq_top_left;
-                }
-                else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_mid_right) && !ai_locations.Contains(sq_mid_left))
-                {
-                    return sq_mid_left;
-                }
-                else if (player_locations.Contains(sq_bot_mid) && player_locations.Contains(sq_bot_right) && !ai_locations.Contains(sq_bot_left))
-                {
-                    return sq_bot_left;
-                }
-                /// Vertical Counters ///
-                // Top
-                else if (player_locations.Contains(sq_mid_left) && player_locations.Contains(sq_bot_left) && !ai_locations.Contains(sq_top_left))
-                {
-                    return sq_top_left;
-                }
-                else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_bot_mid) && !ai_locations.Contains(sq_top_mid))
-                {
-                    return sq_top_mid;
-                }
-                else if (player_locations.Contains(sq_mid_right) && player_locations.Contains(sq_bot_right) && !ai_locations.Contains(sq_top_right))
-                {
-                    return sq_top_right;
-                }
-                // Bottom
-                else if (player_locations.Contains(sq_top_left) && player_locations.Contains(sq_mid_left) && !ai_locations.Contains(sq_bot_left))
-                {
-                    return sq_bot_left;
-                }
-                else if (player_locations.Contains(sq_top_mid) && player_locations.Contains(sq_mid) && !ai_locations.Contains(sq_bot_mid))
-                {
-                    return sq_bot_mid;
-                }
-                else if (player_locations.Contains(sq_top_right) && player_locations.Contains(sq_mid_right) && !ai_locations.Contains(sq_bot_right))
-                {
-                    return sq_bot_right;
-                }
-                /// Diagonal Counters ///
-                else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_bot_right) && !ai_locations.Contains(sq_top_left))
-                {
-                    return sq_top_left;
-                }
-                else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_bot_left) && !ai_locations.Contains(sq_top_right))
-                {
-                    return sq_top_right;
-                }
-                else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_top_left) && !ai_locations.Contains(sq_bot_right))
-                {
-                    return sq_bot_right;
-                }
-                else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_top_right) && !ai_locations.Contains(sq_bot_left))
-                {
-                    return sq_bot_left;
-                }
                 /// Horizontal wins ///
                 // Left
-                else if (ai_locations.Contains(sq_top_mid) && ai_locations.Contains(sq_top_right) && !player_locations.Contains(sq_top_left))
+                if (ai_locations.Contains(sq_top_mid) && ai_locations.Contains(sq_top_right) && !filled.Contains(sq_top_left))
                 {
                     return sq_top_left;
                 }
-                else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_mid_right) && !player_locations.Contains(sq_mid_left))
+                else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_mid_right) && !filled.Contains(sq_mid_left))
                 {
                     return sq_mid_left;
                 }
-                else if (ai_locations.Contains(sq_bot_mid) && ai_locations.Contains(sq_bot_right) && !player_locations.Contains(sq_bot_left))
+                else if (ai_locations.Contains(sq_bot_mid) && ai_locations.Contains(sq_bot_right) && !filled.Contains(sq_bot_left))
                 {
                     return sq_bot_left;
                 }
                 // Right
-                else if (ai_locations.Contains(sq_top_left) && ai_locations.Contains(sq_top_mid) && !player_locations.Contains(sq_top_right))
+                else if (ai_locations.Contains(sq_top_left) && ai_locations.Contains(sq_top_mid) && !filled.Contains(sq_top_right))
                 {
                     return sq_top_right;
                 }
-                else if (ai_locations.Contains(sq_mid_left) && ai_locations.Contains(sq_mid) && !player_locations.Contains(sq_mid_right))
+                else if (ai_locations.Contains(sq_mid_left) && ai_locations.Contains(sq_mid) && !filled.Contains(sq_mid_right))
                 {
                     return sq_mid_right;
                 }
-                else if (ai_locations.Contains(sq_bot_mid) && ai_locations.Contains(sq_bot_left) && !player_locations.Contains(sq_bot_right))
+                else if (ai_locations.Contains(sq_bot_mid) && ai_locations.Contains(sq_bot_left) && !filled.Contains(sq_bot_right))
                 {
                     return sq_bot_right;
                 }
                 /// Vertical Wins ///
                 // Top
-                else if (ai_locations.Contains(sq_mid_left) && ai_locations.Contains(sq_bot_left) && !player_locations.Contains(sq_top_left))
+                else if (ai_locations.Contains(sq_mid_left) && ai_locations.Contains(sq_bot_left) && !filled.Contains(sq_top_left))
                 {
                     return sq_top_left;
                 }
-                else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_bot_mid) && !player_locations.Contains(sq_top_mid))
+                else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_bot_mid) && !filled.Contains(sq_top_mid))
                 {
                     return sq_top_mid;
                 }
-                else if (ai_locations.Contains(sq_mid_right) && ai_locations.Contains(sq_bot_right) && !player_locations.Contains(sq_top_right))
+                else if (ai_locations.Contains(sq_mid_right) && ai_locations.Contains(sq_bot_right) && !filled.Contains(sq_top_right))
                 {
                     return sq_top_right;
                 }
                 // Bottom
-                else if (ai_locations.Contains(sq_top_left) && ai_locations.Contains(sq_mid_left) && !player_locations.Contains(sq_bot_left))
+                else if (ai_locations.Contains(sq_top_left) && ai_locations.Contains(sq_mid_left) && !filled.Contains(sq_bot_left))
                 {
                     return sq_bot_left;
                 }
-                else if (ai_locations.Contains(sq_top_mid) && ai_locations.Contains(sq_mid) && !player_locations.Contains(sq_bot_mid))
+                else if (ai_locations.Contains(sq_top_mid) && ai_locations.Contains(sq_mid) && !filled.Contains(sq_bot_mid))
                 {
                     return sq_bot_mid;
                 }
-                else if (ai_locations.Contains(sq_top_right) && ai_locations.Contains(sq_mid_right) && !player_locations.Contains(sq_bot_right))
+                else if (ai_locations.Contains(sq_top_right) && ai_locations.Contains(sq_mid_right) && !filled.Contains(sq_bot_right))
                 {
                     return sq_bot_right;
                 }
                 /// Diagonal Wins ///
-                else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_top_left) && !player_locations.Contains(sq_bot_right))
+                else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_top_left) && !filled.Contains(sq_bot_right))
                 {
                     return sq_bot_right;
                 }
-                else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_top_right) && !player_locations.Contains(sq_bot_left))
+                else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_top_right) && !filled.Contains(sq_bot_left))
                 {
                     return sq_bot_left;
                 }
-                else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_bot_left) && !player_locations.Contains(sq_top_right))
+                else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_bot_left) && !filled.Contains(sq_top_right))
                 {
                     return sq_top_right;
                 }
-                else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_bot_right) && !player_locations.Contains(sq_top_left))
+                else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_bot_right) && !filled.Contains(sq_top_left))
                 {
                     return sq_top_left;
                 }
+                /// Horizontal Counters ///
+                // Right Side
+                else if (player_locations.Contains(sq_top_left) && player_locations.Contains(sq_top_mid) && !filled.Contains(sq_top_right))
+                {
+                    return sq_top_right;
+                }
+                else if (player_locations.Contains(sq_mid_left) && player_locations.Contains(sq_mid) && !filled.Contains(sq_mid_right))
+                {
+                    return sq_mid_right;
+                }
+                else if (player_locations.Contains(sq_bot_left) && player_locations.Contains(sq_bot_mid) && !filled.Contains(sq_bot_right))
+                {
+                    return sq_bot_right;
+                }
+                // Left side
+                else if (player_locations.Contains(sq_top_mid) && player_locations.Contains(sq_top_right) && !filled.Contains(sq_top_left))
+                {
+                    return sq_top_left;
+                }
+                else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_mid_right) && !filled.Contains(sq_mid_left))
+                {
+                    return sq_mid_left;
+                }
+                else if (player_locations.Contains(sq_bot_mid) && player_locations.Contains(sq_bot_right) && !filled.Contains(sq_bot_left))
+                {
+                    return sq_bot_left;
+                }
+                /// Vertical Counters ///
+                // Top
+                else if (player_locations.Contains(sq_mid_left) && player_locations.Contains(sq_bot_left) && !filled.Contains(sq_top_left))
+                {
+                    return sq_top_left;
+                }
+                else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_bot_mid) && !filled.Contains(sq_top_mid))
+                {
+                    return sq_top_mid;
+                }
+                else if (player_locations.Contains(sq_mid_right) && player_locations.Contains(sq_bot_right) && !filled.Contains(sq_top_right))
+                {
+                    return sq_top_right;
+                }
+                // Bottom
+                else if (player_locations.Contains(sq_top_left) && player_locations.Contains(sq_mid_left) && !filled.Contains(sq_bot_left))
+                {
+                    return sq_bot_left;
+                }
+                else if (player_locations.Contains(sq_top_mid) && player_locations.Contains(sq_mid) && !filled.Contains(sq_bot_mid))
+                {
+                    return sq_bot_mid;
+                }
+                else if (player_locations.Contains(sq_top_right) && player_locations.Contains(sq_mid_right) && !filled.Contains(sq_bot_right))
+                {
+                    return sq_bot_right;
+                }
+                /// Diagonal Counters ///
+                else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_bot_right) && !filled.Contains(sq_top_left))
+                {
+                    return sq_top_left;
+                }
+                else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_bot_left) && !filled.Contains(sq_top_right))
+                {
+                    return sq_top_right;
+                }
+                else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_top_left) && !filled.Contains(sq_bot_right))
+                {
+                    return sq_bot_right;
+                }
+                else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_top_right) && !filled.Contains(sq_bot_left))
+                {
+                    return sq_bot_left;
+                }
                 else
                 {
-                    // Todo
+                    List<Button> empty = new List<Button>();
+                    foreach (Button button in panel1.Controls)
+                    {
+                        if (button.Text == "")
+                        {
+                            empty.Add(button);
+                        }
+                    }
+                    int len_empty = empty.Count;
                     Random rnd = new Random();
-                    int random = rnd.Next(1, 9);
+                    int random = rnd.Next(0, len_empty);
+                    return empty[random];
                 }
             }
             // Normal AI (Usually Counters, Usually goes for Wins)
             else
             {
-
+                Random rnd = new Random();
+                int random = rnd.Next(1, 4);
+                if (random != 1)
+                {
+                    /// Horizontal wins ///
+                    // Left
+                    if (ai_locations.Contains(sq_top_mid) && ai_locations.Contains(sq_top_right) && !filled.Contains(sq_top_left))
+                    {
+                        return sq_top_left;
+                    }
+                    else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_mid_right) && !filled.Contains(sq_mid_left))
+                    {
+                        return sq_mid_left;
+                    }
+                    else if (ai_locations.Contains(sq_bot_mid) && ai_locations.Contains(sq_bot_right) && !filled.Contains(sq_bot_left))
+                    {
+                        return sq_bot_left;
+                    }
+                    // Right
+                    else if (ai_locations.Contains(sq_top_left) && ai_locations.Contains(sq_top_mid) && !filled.Contains(sq_top_right))
+                    {
+                        return sq_top_right;
+                    }
+                    else if (ai_locations.Contains(sq_mid_left) && ai_locations.Contains(sq_mid) && !filled.Contains(sq_mid_right))
+                    {
+                        return sq_mid_right;
+                    }
+                    else if (ai_locations.Contains(sq_bot_mid) && ai_locations.Contains(sq_bot_left) && !filled.Contains(sq_bot_right))
+                    {
+                        return sq_bot_right;
+                    }
+                    /// Vertical Wins ///
+                    // Top
+                    else if (ai_locations.Contains(sq_mid_left) && ai_locations.Contains(sq_bot_left) && !filled.Contains(sq_top_left))
+                    {
+                        return sq_top_left;
+                    }
+                    else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_bot_mid) && !filled.Contains(sq_top_mid))
+                    {
+                        return sq_top_mid;
+                    }
+                    else if (ai_locations.Contains(sq_mid_right) && ai_locations.Contains(sq_bot_right) && !filled.Contains(sq_top_right))
+                    {
+                        return sq_top_right;
+                    }
+                    // Bottom
+                    else if (ai_locations.Contains(sq_top_left) && ai_locations.Contains(sq_mid_left) && !filled.Contains(sq_bot_left))
+                    {
+                        return sq_bot_left;
+                    }
+                    else if (ai_locations.Contains(sq_top_mid) && ai_locations.Contains(sq_mid) && !filled.Contains(sq_bot_mid))
+                    {
+                        return sq_bot_mid;
+                    }
+                    else if (ai_locations.Contains(sq_top_right) && ai_locations.Contains(sq_mid_right) && !filled.Contains(sq_bot_right))
+                    {
+                        return sq_bot_right;
+                    }
+                    /// Diagonal Wins ///
+                    else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_top_left) && !filled.Contains(sq_bot_right))
+                    {
+                        return sq_bot_right;
+                    }
+                    else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_top_right) && !filled.Contains(sq_bot_left))
+                    {
+                        return sq_bot_left;
+                    }
+                    else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_bot_left) && !filled.Contains(sq_top_right))
+                    {
+                        return sq_top_right;
+                    }
+                    else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_bot_right) && !filled.Contains(sq_top_left))
+                    {
+                        return sq_top_left;
+                    }
+                    /// Horizontal Counters ///
+                    // Right Side
+                    else if (player_locations.Contains(sq_top_left) && player_locations.Contains(sq_top_mid) && !filled.Contains(sq_top_right))
+                    {
+                        return sq_top_right;
+                    }
+                    else if (player_locations.Contains(sq_mid_left) && player_locations.Contains(sq_mid) && !filled.Contains(sq_mid_right))
+                    {
+                        return sq_mid_right;
+                    }
+                    else if (player_locations.Contains(sq_bot_left) && player_locations.Contains(sq_bot_mid) && !filled.Contains(sq_bot_right))
+                    {
+                        return sq_bot_right;
+                    }
+                    // Left side
+                    else if (player_locations.Contains(sq_top_mid) && player_locations.Contains(sq_top_right) && !filled.Contains(sq_top_left))
+                    {
+                        return sq_top_left;
+                    }
+                    else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_mid_right) && !filled.Contains(sq_mid_left))
+                    {
+                        return sq_mid_left;
+                    }
+                    else if (player_locations.Contains(sq_bot_mid) && player_locations.Contains(sq_bot_right) && !filled.Contains(sq_bot_left))
+                    {
+                        return sq_bot_left;
+                    }
+                    /// Vertical Counters ///
+                    // Top
+                    else if (player_locations.Contains(sq_mid_left) && player_locations.Contains(sq_bot_left) && !filled.Contains(sq_top_left))
+                    {
+                        return sq_top_left;
+                    }
+                    else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_bot_mid) && !filled.Contains(sq_top_mid))
+                    {
+                        return sq_top_mid;
+                    }
+                    else if (player_locations.Contains(sq_mid_right) && player_locations.Contains(sq_bot_right) && !filled.Contains(sq_top_right))
+                    {
+                        return sq_top_right;
+                    }
+                    // Bottom
+                    else if (player_locations.Contains(sq_top_left) && player_locations.Contains(sq_mid_left) && !filled.Contains(sq_bot_left))
+                    {
+                        return sq_bot_left;
+                    }
+                    else if (player_locations.Contains(sq_top_mid) && player_locations.Contains(sq_mid) && !filled.Contains(sq_bot_mid))
+                    {
+                        return sq_bot_mid;
+                    }
+                    else if (player_locations.Contains(sq_top_right) && player_locations.Contains(sq_mid_right) && !filled.Contains(sq_bot_right))
+                    {
+                        return sq_bot_right;
+                    }
+                    /// Diagonal Counters ///
+                    else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_bot_right) && !filled.Contains(sq_top_left))
+                    {
+                        return sq_top_left;
+                    }
+                    else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_bot_left) && !filled.Contains(sq_top_right))
+                    {
+                        return sq_top_right;
+                    }
+                    else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_top_left) && !filled.Contains(sq_bot_right))
+                    {
+                        return sq_bot_right;
+                    }
+                    else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_top_right) && !filled.Contains(sq_bot_left))
+                    {
+                        return sq_bot_left;
+                    }
+                    else
+                    {
+                        List<Button> empty = new List<Button>();
+                        foreach (Button button in panel1.Controls)
+                        {
+                            if (button.Text == "")
+                            {
+                                empty.Add(button);
+                            }
+                        }
+                        int len_empty = empty.Count;
+                        Random rnd1 = new Random();
+                        int random1 = rnd1.Next(0, len_empty);
+                        return empty[random1];
+                    }
+                }
+                else
+                {
+                    List<Button> empty = new List<Button>();
+                    foreach (Button button in panel1.Controls)
+                    {
+                        if (button.Text == "")
+                        {
+                            empty.Add(button);
+                        }
+                    }
+                    int len_empty = empty.Count;
+                    Random rnd2 = new Random();
+                    int random2 = rnd2.Next(0, len_empty);
+                    return empty[random2];
+                }
             }
             // More AI Difficulties coming soon (maybe)
         }
