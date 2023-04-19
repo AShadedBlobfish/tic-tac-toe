@@ -9,8 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-// Program version = 0.1.1
-// File version = 0.1.1.03
+// Program version = 0.1.2
+// File version = 0.1.2.01
 
 namespace tic_tac_toe
 {
@@ -23,9 +23,6 @@ namespace tic_tac_toe
         int o_wins = 0;
         Point location1 = new Point(458, 70);   // Creates two objects of class Point which represent the location which the turn indicator needs to be in depending on whether it is an "X" or a "O"
         Point location2 = new Point(454, 70);
-        List<Button> player_locations = new List<Button>();
-        List<Button> ai_locations = new List<Button>();
-        List<Button> filled = new List<Button>();
         bool ai = false;
         bool hard_ai = true;
 
@@ -134,8 +131,6 @@ namespace tic_tac_toe
                     label2.Location = location2;
                     label2.ForeColor = Color.MediumBlue;
                     label2.Text = "O";
-                    player_locations.Add(btn);
-                    filled.Add(btn);
                 }
                 else if (!ai)
                 {
@@ -209,15 +204,47 @@ namespace tic_tac_toe
                 }
                 else if (!draw() && ai)
                 {
-                    Button ai_square = ai_move();
+                    int ai_sq = ai_move();
+                    Button ai_square;
+                    switch (ai_sq)
+                    {
+                        case 1:
+                            ai_square = sq_top_left;
+                            break;
+                        case 2:
+                            ai_square = sq_top_mid;
+                            break;
+                        case 3:
+                            ai_square = sq_top_right;
+                            break;
+                        case 4:
+                            ai_square = sq_mid_left;
+                            break;
+                        case 5:
+                            ai_square = sq_mid;
+                            break;
+                        case 6:
+                            ai_square = sq_mid_right;
+                            break;
+                        case 7:
+                            ai_square = sq_bot_left;
+                            break;
+                        case 8:
+                            ai_square = sq_bot_mid;
+                            break;
+                        case 9:
+                            ai_square = sq_bot_right;
+                            break;
+                        default:
+                            ai_square = null;
+                            throw new Exception("A Fatal Error Occured in AI");
+                    }
                     //System.Threading.Thread.Sleep(500);
                     ai_square.ForeColor = Color.MediumBlue;
                     ai_square.Text = "O";
                     label2.Location = location1;
                     label2.ForeColor = Color.Crimson;
                     label2.Text = "X";
-                    ai_locations.Add(ai_square);
-                    filled.Add(ai_square);
                     turn++;
                 }
 
@@ -252,9 +279,6 @@ namespace tic_tac_toe
                     label6.Text = Convert.ToString(o_wins);
                     label7.Text = Convert.ToString(x_wins);
                     turn = 0;
-                    player_locations.Clear();
-                    ai_locations.Clear();
-                    filled.Clear();
                 }
                 else if (draw())
                 {
@@ -277,9 +301,6 @@ namespace tic_tac_toe
                     label6.Text = Convert.ToString(o_wins);
                     label7.Text = Convert.ToString(x_wins);
                     turn = 0;
-                    player_locations.Clear();
-                    ai_locations.Clear();
-                    filled.Clear();
                 }
             }
         }
@@ -316,351 +337,89 @@ namespace tic_tac_toe
         }
         #endregion
         #region AI
-        private Button ai_move()
+        private int ai_move()
         {
             // Note - Wow I *really* hate this
+
+            int[] p_grid = new int[9];
+            int i = 0;
+            foreach (Button btn in panel1.Controls)
+            {
+                if (btn.Text == "X")
+                {
+                    p_grid[i] = 1;
+                }
+                else
+                {
+                    p_grid[i] = 0;
+                }
+                i++;
+            }
+
+            int[] ai_grid = new int[9];
+            int j = 0;
+            foreach (Button btn in panel1.Controls)
+            {
+                if (btn.Text == "O")
+                {
+                    ai_grid[j] = 1;
+                }
+                else
+                {
+                    ai_grid[j] = 0;
+                }
+                j++;
+            }
 
             // Hard AI (Always Counters, Always goes for Wins)
             if (hard_ai)
             {
-                /// Horizontal wins ///
-                // Left
-                if (ai_locations.Contains(sq_top_mid) && ai_locations.Contains(sq_top_right) && !filled.Contains(sq_top_left))
+                int[] working = new int[3];
+
+                /// Horizontal Wins ///
+                // Top row
+                Array.Copy(ai_grid, 0, working, 0, 3);
+                if (working.Sum() == 2)
                 {
-                    return sq_top_left;
+                    return Array.FindIndex(working, e => e == 0) + 1;
                 }
-                else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_mid_right) && !filled.Contains(sq_mid_left))
+                // Middle row
+                Array.Copy(ai_grid, 3, working, 0, 3);
+                if (working.Sum() == 2)
                 {
-                    return sq_mid_left;
+                    return Array.FindIndex(working, e => e == 0) + 4;
                 }
-                else if (ai_locations.Contains(sq_bot_mid) && ai_locations.Contains(sq_bot_right) && !filled.Contains(sq_bot_left))
+                // Bottom row
+                Array.Copy(ai_grid, 6, working, 0, 3);
+                if (working.Sum() == 2)
                 {
-                    return sq_bot_left;
-                }
-                // Right
-                else if (ai_locations.Contains(sq_top_left) && ai_locations.Contains(sq_top_mid) && !filled.Contains(sq_top_right))
-                {
-                    return sq_top_right;
-                }
-                else if (ai_locations.Contains(sq_mid_left) && ai_locations.Contains(sq_mid) && !filled.Contains(sq_mid_right))
-                {
-                    return sq_mid_right;
-                }
-                else if (ai_locations.Contains(sq_bot_mid) && ai_locations.Contains(sq_bot_left) && !filled.Contains(sq_bot_right))
-                {
-                    return sq_bot_right;
+                    return Array.FindIndex(working, e => e == 0) + 7;
                 }
                 /// Vertical Wins ///
-                // Top
-                else if (ai_locations.Contains(sq_mid_left) && ai_locations.Contains(sq_bot_left) && !filled.Contains(sq_top_left))
+                // Left
+                working[0] = ai_grid[0];
+                working[1] = ai_grid[3];
+                working[2] = ai_grid[6];
+                if (working.Sum() == 2)
                 {
-                    return sq_top_left;
-                }
-                else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_bot_mid) && !filled.Contains(sq_top_mid))
-                {
-                    return sq_top_mid;
-                }
-                else if (ai_locations.Contains(sq_mid_right) && ai_locations.Contains(sq_bot_right) && !filled.Contains(sq_top_right))
-                {
-                    return sq_top_right;
-                }
-                // Bottom
-                else if (ai_locations.Contains(sq_top_left) && ai_locations.Contains(sq_mid_left) && !filled.Contains(sq_bot_left))
-                {
-                    return sq_bot_left;
-                }
-                else if (ai_locations.Contains(sq_top_mid) && ai_locations.Contains(sq_mid) && !filled.Contains(sq_bot_mid))
-                {
-                    return sq_bot_mid;
-                }
-                else if (ai_locations.Contains(sq_top_right) && ai_locations.Contains(sq_mid_right) && !filled.Contains(sq_bot_right))
-                {
-                    return sq_bot_right;
-                }
-                /// Diagonal Wins ///
-                else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_top_left) && !filled.Contains(sq_bot_right))
-                {
-                    return sq_bot_right;
-                }
-                else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_top_right) && !filled.Contains(sq_bot_left))
-                {
-                    return sq_bot_left;
-                }
-                else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_bot_left) && !filled.Contains(sq_top_right))
-                {
-                    return sq_top_right;
-                }
-                else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_bot_right) && !filled.Contains(sq_top_left))
-                {
-                    return sq_top_left;
-                }
-                /// Horizontal Counters ///
-                // Right Side
-                else if (player_locations.Contains(sq_top_left) && player_locations.Contains(sq_top_mid) && !filled.Contains(sq_top_right))
-                {
-                    return sq_top_right;
-                }
-                else if (player_locations.Contains(sq_mid_left) && player_locations.Contains(sq_mid) && !filled.Contains(sq_mid_right))
-                {
-                    return sq_mid_right;
-                }
-                else if (player_locations.Contains(sq_bot_left) && player_locations.Contains(sq_bot_mid) && !filled.Contains(sq_bot_right))
-                {
-                    return sq_bot_right;
-                }
-                // Left side
-                else if (player_locations.Contains(sq_top_mid) && player_locations.Contains(sq_top_right) && !filled.Contains(sq_top_left))
-                {
-                    return sq_top_left;
-                }
-                else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_mid_right) && !filled.Contains(sq_mid_left))
-                {
-                    return sq_mid_left;
-                }
-                else if (player_locations.Contains(sq_bot_mid) && player_locations.Contains(sq_bot_right) && !filled.Contains(sq_bot_left))
-                {
-                    return sq_bot_left;
-                }
-                /// Vertical Counters ///
-                // Top
-                else if (player_locations.Contains(sq_mid_left) && player_locations.Contains(sq_bot_left) && !filled.Contains(sq_top_left))
-                {
-                    return sq_top_left;
-                }
-                else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_bot_mid) && !filled.Contains(sq_top_mid))
-                {
-                    return sq_top_mid;
-                }
-                else if (player_locations.Contains(sq_mid_right) && player_locations.Contains(sq_bot_right) && !filled.Contains(sq_top_right))
-                {
-                    return sq_top_right;
-                }
-                // Bottom
-                else if (player_locations.Contains(sq_top_left) && player_locations.Contains(sq_mid_left) && !filled.Contains(sq_bot_left))
-                {
-                    return sq_bot_left;
-                }
-                else if (player_locations.Contains(sq_top_mid) && player_locations.Contains(sq_mid) && !filled.Contains(sq_bot_mid))
-                {
-                    return sq_bot_mid;
-                }
-                else if (player_locations.Contains(sq_top_right) && player_locations.Contains(sq_mid_right) && !filled.Contains(sq_bot_right))
-                {
-                    return sq_bot_right;
-                }
-                /// Diagonal Counters ///
-                else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_bot_right) && !filled.Contains(sq_top_left))
-                {
-                    return sq_top_left;
-                }
-                else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_bot_left) && !filled.Contains(sq_top_right))
-                {
-                    return sq_top_right;
-                }
-                else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_top_left) && !filled.Contains(sq_bot_right))
-                {
-                    return sq_bot_right;
-                }
-                else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_top_right) && !filled.Contains(sq_bot_left))
-                {
-                    return sq_bot_left;
-                }
-                else
-                {
-                    List<Button> empty = new List<Button>();
-                    foreach (Button button in panel1.Controls)
+                    int pos0 = Array.FindIndex(working, e => e == 0);
+                    switch (pos0)
                     {
-                        if (button.Text == "")
-                        {
-                            empty.Add(button);
-                        }
+                        case 0:
+                            return 1;
+                        case 1:
+                            return 4;
+                        case 2:
+                            return 7;
                     }
-                    int len_empty = empty.Count;
-                    Random rnd = new Random();
-                    int random = rnd.Next(0, len_empty);
-                    return empty[random];
                 }
+                // Middle
+                // Todo
             }
             // Normal AI (Usually Counters, Usually goes for Wins)
             else
             {
-                Random rnd = new Random();
-                int random = rnd.Next(1, 4);
-                if (random != 1)
-                {
-                    /// Horizontal wins ///
-                    // Left
-                    if (ai_locations.Contains(sq_top_mid) && ai_locations.Contains(sq_top_right) && !filled.Contains(sq_top_left))
-                    {
-                        return sq_top_left;
-                    }
-                    else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_mid_right) && !filled.Contains(sq_mid_left))
-                    {
-                        return sq_mid_left;
-                    }
-                    else if (ai_locations.Contains(sq_bot_mid) && ai_locations.Contains(sq_bot_right) && !filled.Contains(sq_bot_left))
-                    {
-                        return sq_bot_left;
-                    }
-                    // Right
-                    else if (ai_locations.Contains(sq_top_left) && ai_locations.Contains(sq_top_mid) && !filled.Contains(sq_top_right))
-                    {
-                        return sq_top_right;
-                    }
-                    else if (ai_locations.Contains(sq_mid_left) && ai_locations.Contains(sq_mid) && !filled.Contains(sq_mid_right))
-                    {
-                        return sq_mid_right;
-                    }
-                    else if (ai_locations.Contains(sq_bot_mid) && ai_locations.Contains(sq_bot_left) && !filled.Contains(sq_bot_right))
-                    {
-                        return sq_bot_right;
-                    }
-                    /// Vertical Wins ///
-                    // Top
-                    else if (ai_locations.Contains(sq_mid_left) && ai_locations.Contains(sq_bot_left) && !filled.Contains(sq_top_left))
-                    {
-                        return sq_top_left;
-                    }
-                    else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_bot_mid) && !filled.Contains(sq_top_mid))
-                    {
-                        return sq_top_mid;
-                    }
-                    else if (ai_locations.Contains(sq_mid_right) && ai_locations.Contains(sq_bot_right) && !filled.Contains(sq_top_right))
-                    {
-                        return sq_top_right;
-                    }
-                    // Bottom
-                    else if (ai_locations.Contains(sq_top_left) && ai_locations.Contains(sq_mid_left) && !filled.Contains(sq_bot_left))
-                    {
-                        return sq_bot_left;
-                    }
-                    else if (ai_locations.Contains(sq_top_mid) && ai_locations.Contains(sq_mid) && !filled.Contains(sq_bot_mid))
-                    {
-                        return sq_bot_mid;
-                    }
-                    else if (ai_locations.Contains(sq_top_right) && ai_locations.Contains(sq_mid_right) && !filled.Contains(sq_bot_right))
-                    {
-                        return sq_bot_right;
-                    }
-                    /// Diagonal Wins ///
-                    else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_top_left) && !filled.Contains(sq_bot_right))
-                    {
-                        return sq_bot_right;
-                    }
-                    else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_top_right) && !filled.Contains(sq_bot_left))
-                    {
-                        return sq_bot_left;
-                    }
-                    else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_bot_left) && !filled.Contains(sq_top_right))
-                    {
-                        return sq_top_right;
-                    }
-                    else if (ai_locations.Contains(sq_mid) && ai_locations.Contains(sq_bot_right) && !filled.Contains(sq_top_left))
-                    {
-                        return sq_top_left;
-                    }
-                    /// Horizontal Counters ///
-                    // Right Side
-                    else if (player_locations.Contains(sq_top_left) && player_locations.Contains(sq_top_mid) && !filled.Contains(sq_top_right))
-                    {
-                        return sq_top_right;
-                    }
-                    else if (player_locations.Contains(sq_mid_left) && player_locations.Contains(sq_mid) && !filled.Contains(sq_mid_right))
-                    {
-                        return sq_mid_right;
-                    }
-                    else if (player_locations.Contains(sq_bot_left) && player_locations.Contains(sq_bot_mid) && !filled.Contains(sq_bot_right))
-                    {
-                        return sq_bot_right;
-                    }
-                    // Left side
-                    else if (player_locations.Contains(sq_top_mid) && player_locations.Contains(sq_top_right) && !filled.Contains(sq_top_left))
-                    {
-                        return sq_top_left;
-                    }
-                    else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_mid_right) && !filled.Contains(sq_mid_left))
-                    {
-                        return sq_mid_left;
-                    }
-                    else if (player_locations.Contains(sq_bot_mid) && player_locations.Contains(sq_bot_right) && !filled.Contains(sq_bot_left))
-                    {
-                        return sq_bot_left;
-                    }
-                    /// Vertical Counters ///
-                    // Top
-                    else if (player_locations.Contains(sq_mid_left) && player_locations.Contains(sq_bot_left) && !filled.Contains(sq_top_left))
-                    {
-                        return sq_top_left;
-                    }
-                    else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_bot_mid) && !filled.Contains(sq_top_mid))
-                    {
-                        return sq_top_mid;
-                    }
-                    else if (player_locations.Contains(sq_mid_right) && player_locations.Contains(sq_bot_right) && !filled.Contains(sq_top_right))
-                    {
-                        return sq_top_right;
-                    }
-                    // Bottom
-                    else if (player_locations.Contains(sq_top_left) && player_locations.Contains(sq_mid_left) && !filled.Contains(sq_bot_left))
-                    {
-                        return sq_bot_left;
-                    }
-                    else if (player_locations.Contains(sq_top_mid) && player_locations.Contains(sq_mid) && !filled.Contains(sq_bot_mid))
-                    {
-                        return sq_bot_mid;
-                    }
-                    else if (player_locations.Contains(sq_top_right) && player_locations.Contains(sq_mid_right) && !filled.Contains(sq_bot_right))
-                    {
-                        return sq_bot_right;
-                    }
-                    /// Diagonal Counters ///
-                    else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_bot_right) && !filled.Contains(sq_top_left))
-                    {
-                        return sq_top_left;
-                    }
-                    else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_bot_left) && !filled.Contains(sq_top_right))
-                    {
-                        return sq_top_right;
-                    }
-                    else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_top_left) && !filled.Contains(sq_bot_right))
-                    {
-                        return sq_bot_right;
-                    }
-                    else if (player_locations.Contains(sq_mid) && player_locations.Contains(sq_top_right) && !filled.Contains(sq_bot_left))
-                    {
-                        return sq_bot_left;
-                    }
-                    else
-                    {
-                        List<Button> empty = new List<Button>();
-                        foreach (Button button in panel1.Controls)
-                        {
-                            if (button.Text == "")
-                            {
-                                empty.Add(button);
-                            }
-                        }
-                        int len_empty = empty.Count;
-                        Random rnd1 = new Random();
-                        int random1 = rnd1.Next(0, len_empty);
-                        return empty[random1];
-                    }
-                }
-                else
-                {
-                    List<Button> empty = new List<Button>();
-                    foreach (Button button in panel1.Controls)
-                    {
-                        if (button.Text == "")
-                        {
-                            empty.Add(button);
-                        }
-                    }
-                    int len_empty = empty.Count;
-                    Random rnd2 = new Random();
-                    int random2 = rnd2.Next(0, len_empty);
-                    return empty[random2];
-                }
+
             }
             // More AI Difficulties coming soon (maybe)
         }

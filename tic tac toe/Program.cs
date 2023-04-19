@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-// Program version = 0.1.1
+// Program version = 0.1.2
 
 namespace tic_tac_toe
 {
@@ -18,7 +18,7 @@ namespace tic_tac_toe
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1("0.1.1"));
+            Application.Run(new Form1("0.1.2"));
         }
     }
 }
