@@ -9,8 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-// Program version = 0.1.2
-// File version = 0.1.2.01
+// Program version = 0.1.2.01
+// File version = 0.1.2.04
 
 namespace tic_tac_toe
 {
@@ -173,9 +173,6 @@ namespace tic_tac_toe
                     label6.Text = Convert.ToString(o_wins);
                     label7.Text = Convert.ToString(x_wins);
                     turn = 0;
-                    player_locations.Clear();
-                    ai_locations.Clear();
-                    filled.Clear();
                 }
                 else if (draw())
                 {
@@ -198,47 +195,11 @@ namespace tic_tac_toe
                     label6.Text = Convert.ToString(o_wins);
                     label7.Text = Convert.ToString(x_wins);
                     turn = 0;
-                    player_locations.Clear();
-                    ai_locations.Clear();
-                    filled.Clear();
                 }
                 else if (!draw() && ai)
                 {
                     int ai_sq = ai_move();
-                    Button ai_square;
-                    switch (ai_sq)
-                    {
-                        case 1:
-                            ai_square = sq_top_left;
-                            break;
-                        case 2:
-                            ai_square = sq_top_mid;
-                            break;
-                        case 3:
-                            ai_square = sq_top_right;
-                            break;
-                        case 4:
-                            ai_square = sq_mid_left;
-                            break;
-                        case 5:
-                            ai_square = sq_mid;
-                            break;
-                        case 6:
-                            ai_square = sq_mid_right;
-                            break;
-                        case 7:
-                            ai_square = sq_bot_left;
-                            break;
-                        case 8:
-                            ai_square = sq_bot_mid;
-                            break;
-                        case 9:
-                            ai_square = sq_bot_right;
-                            break;
-                        default:
-                            ai_square = null;
-                            throw new Exception("A Fatal Error Occured in AI");
-                    }
+                    Button ai_square = IntToButton(ai_sq);
                     //System.Threading.Thread.Sleep(500);
                     ai_square.ForeColor = Color.MediumBlue;
                     ai_square.Text = "O";
@@ -337,6 +298,76 @@ namespace tic_tac_toe
         }
         #endregion
         #region AI
+        private int ButtonToInt(Button btn)
+        {
+            if (btn == sq_top_left)
+            {
+                return 1;
+            }
+            else if (btn == sq_top_mid)
+            {
+                return 2;
+            }
+            else if (btn == sq_top_right)
+            {
+                return 3;
+            }
+            else if (btn == sq_mid_left)
+            {
+                return 4;
+            }
+            else if (btn == sq_mid)
+            {
+                return 5;
+            }
+            else if (btn == sq_mid_right)
+            {
+                return 6;
+            }
+            else if (btn == sq_bot_left)
+            {
+                return 7;
+            }
+            else if (btn == sq_bot_mid)
+            {
+                return 8;
+            }
+            else if (btn == sq_bot_right)
+            {
+                return 9;
+            }
+            else
+            {
+                throw new Exception("Fatal Error");
+            }
+        }
+
+        private Button IntToButton(int inni)
+        {
+            switch (inni)
+            {
+                case 1:
+                    return sq_top_left;
+                case 2:
+                    return sq_top_mid;
+                case 3:
+                    return sq_top_right;
+                case 4:
+                    return sq_mid_left;
+                case 5:
+                    return sq_mid;
+                case 6:
+                    return sq_mid_right;
+                case 7:
+                    return sq_bot_left;
+                case 8:
+                    return sq_bot_mid;
+                case 9:
+                    return sq_bot_right;
+                default:
+                    throw new Exception("A Fatal Error Occured");
+            }
+        }
         private int ai_move()
         {
             // Note - Wow I *really* hate this
@@ -371,55 +402,614 @@ namespace tic_tac_toe
                 j++;
             }
 
-            // Hard AI (Always Counters, Always goes for Wins)
+            // Hard AI: Always Counters, Always goes for Wins
             if (hard_ai)
             {
                 int[] working = new int[3];
+                int[] working1 = new int[3];
+                int pos0;
 
                 /// Horizontal Wins ///
                 // Top row
                 Array.Copy(ai_grid, 0, working, 0, 3);
+                Array.Copy(p_grid, 0, working1, 0, 3);
                 if (working.Sum() == 2)
                 {
-                    return Array.FindIndex(working, e => e == 0) + 1;
+                    pos0 = Array.FindIndex(working, e => e == 0);
+                    if (working1[pos0] == 0)
+                    {
+                        return pos0 + 1;
+                    }
                 }
                 // Middle row
                 Array.Copy(ai_grid, 3, working, 0, 3);
+                Array.Copy(p_grid, 3, working1, 0, 3);
                 if (working.Sum() == 2)
                 {
-                    return Array.FindIndex(working, e => e == 0) + 4;
+                    pos0 = Array.FindIndex(working, e => e == 0);
+                    if (working1[pos0] == 0)
+                    {
+                        return pos0 + 4;
+                    }
                 }
                 // Bottom row
                 Array.Copy(ai_grid, 6, working, 0, 3);
+                Array.Copy(p_grid, 6, working1, 0, 3);
                 if (working.Sum() == 2)
                 {
-                    return Array.FindIndex(working, e => e == 0) + 7;
+                    pos0 = Array.FindIndex(working, e => e == 0);
+                    if (working1[pos0] == 0)
+                    {
+                        return pos0 + 7;
+                    }
                 }
                 /// Vertical Wins ///
                 // Left
-                working[0] = ai_grid[0];
-                working[1] = ai_grid[3];
-                working[2] = ai_grid[6];
+                working = new int[] { ai_grid[0], ai_grid[3], ai_grid[6] };
+                working1 = new int[] { p_grid[0], p_grid[3], p_grid[6] };
                 if (working.Sum() == 2)
                 {
-                    int pos0 = Array.FindIndex(working, e => e == 0);
-                    switch (pos0)
+                    pos0 = Array.FindIndex(working, e => e == 0);
+                    if (working1[pos0] == 0)
                     {
-                        case 0:
-                            return 1;
-                        case 1:
-                            return 4;
-                        case 2:
-                            return 7;
+                        switch (pos0)
+                        {
+                            case 0:
+                                return 1;
+                            case 1:
+                                return 4;
+                            case 2:
+                                return 7;
+                        }
                     }
                 }
                 // Middle
-                // Todo
+                working = new int[] { ai_grid[1], ai_grid[4], ai_grid[7] };
+                working1 = new int[] { p_grid[1], p_grid[4], p_grid[7] };
+                if (working.Sum() == 2)
+                {
+                    pos0 = Array.FindIndex(working, e => e == 0);
+                    if (working1[pos0] == 0)
+                    {
+                        switch (pos0)
+                        {
+                            case 0:
+                                return 2;
+                            case 1:
+                                return 5;
+                            case 2:
+                                return 8;
+                        }
+                    }
+                }
+                // Right
+                working = new int[] { ai_grid[2], ai_grid[6], ai_grid[8] };
+                working1 = new int[] { p_grid[2], p_grid[6], p_grid[8] };
+                if (working.Sum() == 2)
+                {
+                    pos0 = Array.FindIndex(working, e => e == 0);
+                    if (working1[pos0] == 0)
+                    {
+                        switch (pos0)
+                        {
+                            case 0:
+                                return 3;
+                            case 1:
+                                return 6;
+                            case 2:
+                                return 9;
+                        }
+                    }
+                }
+                /// Diagonal Wins ///
+                working = new int[] { ai_grid[0], ai_grid[4], ai_grid[8] };
+                working1 = new int[] { p_grid[0], p_grid[4], p_grid[8] };
+                if (working.Sum() == 2)
+                {
+                    pos0 = Array.FindIndex(working, e => e == 0);
+                    if (working1[pos0] == 0)
+                    {
+                        switch (pos0)
+                        {
+                            case 0:
+                                return 1;
+                            case 1:
+                                return 5;
+                            case 2:
+                                return 9;
+                        }
+                    }
+                }
+                working = new int[] { ai_grid[2], ai_grid[4], ai_grid[6] };
+                working1 = new int[] { p_grid[2], p_grid[4], p_grid[6] };
+                if (working.Sum() == 2)
+                {
+                    pos0 = Array.FindIndex(working, e => e == 0);
+                    if (working1[pos0] == 0)
+                    {
+                        switch (pos0)
+                        {
+                            case 0:
+                                return 3;
+                            case 1:
+                                return 5;
+                            case 2:
+                                return 7;
+                        }
+                    }
+                }
+                /// Horizontal Counters ///
+                // Top
+                Array.Copy(p_grid, 0, working, 0, 3);
+                Array.Copy(ai_grid, 0, working1, 0, 3);
+                if (working.Sum() == 2)
+                {
+                    pos0 = Array.FindIndex(working, e => e == 0);
+                    if (working1[pos0] == 0)
+                    {
+                        switch (pos0)
+                        {
+                            case 0:
+                                return 1;
+                            case 1:
+                                return 2;
+                            case 2:
+                                return 3;       
+                        }
+                    }
+                }
+                // Middle
+                Array.Copy(p_grid, 3, working, 0, 3);
+                Array.Copy(ai_grid, 3, working1, 0, 3);
+                if (working.Sum() == 2)
+                {
+                    pos0 = Array.FindIndex(working, e => e == 0);
+                    if (working1[pos0] == 0)
+                    {
+                        switch (pos0)
+                        {
+                            case 0:
+                                return 4;
+                            case 1:
+                                return 5;
+                            case 2:
+                                return 6;
+                        }
+                    }
+                }
+                // Bottom
+                Array.Copy(p_grid, 6, working, 0, 3);
+                Array.Copy(ai_grid, 6, working1, 0, 3);
+                if (working.Sum() == 2)
+                {
+                    pos0 = Array.FindIndex(working, e => e == 0);
+                    if (working1[pos0] == 0)
+                    {
+                        switch (pos0)
+                        {
+                            case 0:
+                                return 7;
+                            case 1:
+                                return 8;
+                            case 2:
+                                return 9;
+                        }
+                    }
+                }
+                /// Vertical Counters ///
+                // Left
+                working = new int[] { p_grid[0], p_grid[3], p_grid[6] };
+                working1 = new int[] { ai_grid[0], ai_grid[3], ai_grid[6] };
+                if (working.Sum() == 2)
+                {
+                    pos0 = Array.FindIndex(working, e => e == 0);
+                    if (working1[pos0] == 0)
+                    {
+                        switch (pos0)
+                        {
+                            case 0:
+                                return 1;
+                            case 1:
+                                return 4;
+                            case 2:
+                                return 7;
+                        }
+                    }
+                }
+                // Middle
+                working = new int[] { p_grid[1], p_grid[4], p_grid[7] };
+                working1 = new int[] { ai_grid[1], ai_grid[4], ai_grid[7] };
+                if (working.Sum() == 2)
+                {
+                    pos0 = Array.FindIndex(working, e => e == 0);
+                    if (working1[pos0] == 0)
+                    {
+                        switch (pos0)
+                        {
+                            case 0:
+                                return 2;
+                            case 1:
+                                return 5;
+                            case 2:
+                                return 8;
+                        }
+                    }
+                }
+                // Right
+                working = new int[] { p_grid[2], p_grid[5], p_grid[8] };
+                working1 = new int[] { ai_grid[2], ai_grid[5], ai_grid[8] };
+                if (working.Sum() == 2)
+                {
+                    pos0 = Array.FindIndex(working, e => e == 0);
+                    if (working1[pos0] == 0)
+                    {
+                        switch (pos0)
+                        {
+                            case 0:
+                                return 3;
+                            case 1:
+                                return 6;
+                            case 2:
+                                return 9;
+                        }
+                    }
+                }
+                /// Diagonal Counters ///
+                working = new int[] { p_grid[0], p_grid[4], p_grid[8] };
+                working1 = new int[] { ai_grid[0], ai_grid[4], ai_grid[8] };
+                if (working.Sum() == 2)
+                {
+                    pos0 = Array.FindIndex(working, e => e == 0);
+                    if (working1[pos0] == 0)
+                    {
+                        switch (pos0)
+                        {
+                            case 0:
+                                return 1;
+                            case 1:
+                                return 5;
+                            case 2:
+                                return 9;
+                        }
+                    }
+                }
+                working = new int[] { p_grid[2], p_grid[4], p_grid[6] };
+                working1 = new int[] { ai_grid[2], ai_grid[4], ai_grid[6] };
+                if (working.Sum() == 2)
+                {
+                    pos0 = Array.FindIndex(working, e => e == 0);
+                    if (working1[pos0] == 0)
+                    {
+                        switch (pos0)
+                        {
+                            case 0:
+                                return 3;
+                            case 1:
+                                return 5;
+                            case 2:
+                                return 7;
+                        }
+                    }
+                }
+                List<Button> empty = new List<Button>();
+                foreach (Button btn in panel1.Controls)
+                {
+                    if (btn.Text == "")
+                    {
+                        empty.Add(btn);
+                    }
+                }
+                int len_empty = empty.Count;
+                Random rnd = new Random();
+                int random = rnd.Next(0, len_empty);
+                return ButtonToInt(empty[random]);
             }
-            // Normal AI (Usually Counters, Usually goes for Wins)
+            // Normal AI: Usually Counters, Usually goes for Wins
             else
             {
+                Random rnd = new Random();
+                int random = rnd.Next(1, 5);
+                if (random != 1)
+                {
+                    int[] working = new int[3];
+                    int[] working1 = new int[3];
+                    int pos0;
 
+                    /// Horizontal Wins ///
+                    // Top row
+                    Array.Copy(ai_grid, 0, working, 0, 3);
+                    Array.Copy(p_grid, 0, working1, 0, 3);
+                    if (working.Sum() == 2)
+                    {
+                        pos0 = Array.FindIndex(working, e => e == 0);
+                        if (working1[pos0] == 0)
+                        {
+                            return pos0 + 1;
+                        }
+                    }
+                    // Middle row
+                    Array.Copy(ai_grid, 3, working, 0, 3);
+                    Array.Copy(p_grid, 3, working1, 0, 3);
+                    if (working.Sum() == 2)
+                    {
+                        pos0 = Array.FindIndex(working, e => e == 0);
+                        if (working1[pos0] == 0)
+                        {
+                            return pos0 + 4;
+                        }
+                    }
+                    // Bottom row
+                    Array.Copy(ai_grid, 6, working, 0, 3);
+                    Array.Copy(p_grid, 6, working1, 0, 3);
+                    if (working.Sum() == 2)
+                    {
+                        pos0 = Array.FindIndex(working, e => e == 0);
+                        if (working1[pos0] == 0)
+                        {
+                            return pos0 + 7;
+                        }
+                    }
+                    /// Vertical Wins ///
+                    // Left
+                    working = new int[] { ai_grid[0], ai_grid[3], ai_grid[6] };
+                    working1 = new int[] { p_grid[0], p_grid[3], p_grid[6] };
+                    if (working.Sum() == 2)
+                    {
+                        pos0 = Array.FindIndex(working, e => e == 0);
+                        if (working1[pos0] == 0)
+                        {
+                            switch (pos0)
+                            {
+                                case 0:
+                                    return 1;
+                                case 1:
+                                    return 4;
+                                case 2:
+                                    return 7;
+                            }
+                        }
+                    }
+                    // Middle
+                    working = new int[] { ai_grid[1], ai_grid[4], ai_grid[7] };
+                    working1 = new int[] { p_grid[1], p_grid[4], p_grid[7] };
+                    if (working.Sum() == 2)
+                    {
+                        pos0 = Array.FindIndex(working, e => e == 0);
+                        if (working1[pos0] == 0)
+                        {
+                            switch (pos0)
+                            {
+                                case 0:
+                                    return 2;
+                                case 1:
+                                    return 5;
+                                case 2:
+                                    return 8;
+                            }
+                        }
+                    }
+                    // Right
+                    working = new int[] { ai_grid[2], ai_grid[6], ai_grid[8] };
+                    working1 = new int[] { p_grid[2], p_grid[6], p_grid[8] };
+                    if (working.Sum() == 2)
+                    {
+                        pos0 = Array.FindIndex(working, e => e == 0);
+                        if (working1[pos0] == 0)
+                        {
+                            switch (pos0)
+                            {
+                                case 0:
+                                    return 3;
+                                case 1:
+                                    return 6;
+                                case 2:
+                                    return 9;
+                            }
+                        }
+                    }
+                    /// Diagonal Wins ///
+                    working = new int[] { ai_grid[0], ai_grid[4], ai_grid[8] };
+                    working1 = new int[] { p_grid[0], p_grid[4], p_grid[8] };
+                    if (working.Sum() == 2)
+                    {
+                        pos0 = Array.FindIndex(working, e => e == 0);
+                        if (working1[pos0] == 0)
+                        {
+                            switch (pos0)
+                            {
+                                case 0:
+                                    return 1;
+                                case 1:
+                                    return 5;
+                                case 2:
+                                    return 9;
+                            }
+                        }
+                    }
+                    working = new int[] { ai_grid[2], ai_grid[4], ai_grid[6] };
+                    working1 = new int[] { p_grid[2], p_grid[4], p_grid[6] };
+                    if (working.Sum() == 2)
+                    {
+                        pos0 = Array.FindIndex(working, e => e == 0);
+                        if (working1[pos0] == 0)
+                        {
+                            switch (pos0)
+                            {
+                                case 0:
+                                    return 3;
+                                case 1:
+                                    return 5;
+                                case 2:
+                                    return 7;
+                            }
+                        }
+                    }
+                    /// Horizontal Counters ///
+                    // Top
+                    Array.Copy(p_grid, 0, working, 0, 3);
+                    Array.Copy(ai_grid, 0, working1, 0, 3);
+                    if (working.Sum() == 2)
+                    {
+                        pos0 = Array.FindIndex(working, e => e == 0);
+                        if (working1[pos0] == 0)
+                        {
+                            switch (pos0)
+                            {
+                                case 0:
+                                    return 1;
+                                case 1:
+                                    return 2;
+                                case 2:
+                                    return 3;
+                            }
+                        }
+                    }
+                    // Middle
+                    Array.Copy(p_grid, 3, working, 0, 3);
+                    Array.Copy(ai_grid, 3, working1, 0, 3);
+                    if (working.Sum() == 2)
+                    {
+                        pos0 = Array.FindIndex(working, e => e == 0);
+                        if (working1[pos0] == 0)
+                        {
+                            switch (pos0)
+                            {
+                                case 0:
+                                    return 4;
+                                case 1:
+                                    return 5;
+                                case 2:
+                                    return 6;
+                            }
+                        }
+                    }
+                    // Bottom
+                    Array.Copy(p_grid, 6, working, 0, 3);
+                    Array.Copy(ai_grid, 6, working1, 0, 3);
+                    if (working.Sum() == 2)
+                    {
+                        pos0 = Array.FindIndex(working, e => e == 0);
+                        if (working1[pos0] == 0)
+                        {
+                            switch (pos0)
+                            {
+                                case 0:
+                                    return 7;
+                                case 1:
+                                    return 8;
+                                case 2:
+                                    return 9;
+                            }
+                        }
+                    }
+                    /// Vertical Counters ///
+                    // Left
+                    working = new int[] { p_grid[0], p_grid[3], p_grid[6] };
+                    working1 = new int[] { ai_grid[0], ai_grid[3], ai_grid[6] };
+                    if (working.Sum() == 2)
+                    {
+                        pos0 = Array.FindIndex(working, e => e == 0);
+                        if (working1[pos0] == 0)
+                        {
+                            switch (pos0)
+                            {
+                                case 0:
+                                    return 1;
+                                case 1:
+                                    return 4;
+                                case 2:
+                                    return 7;
+                            }
+                        }
+                    }
+                    // Middle
+                    working = new int[] { p_grid[1], p_grid[4], p_grid[7] };
+                    working1 = new int[] { ai_grid[1], ai_grid[4], ai_grid[7] };
+                    if (working.Sum() == 2)
+                    {
+                        pos0 = Array.FindIndex(working, e => e == 0);
+                        if (working1[pos0] == 0)
+                        {
+                            switch (pos0)
+                            {
+                                case 0:
+                                    return 2;
+                                case 1:
+                                    return 5;
+                                case 2:
+                                    return 8;
+                            }
+                        }
+                    }
+                    // Right
+                    working = new int[] { p_grid[2], p_grid[5], p_grid[8] };
+                    working1 = new int[] { ai_grid[2], ai_grid[5], ai_grid[8] };
+                    if (working.Sum() == 2)
+                    {
+                        pos0 = Array.FindIndex(working, e => e == 0);
+                        if (working1[pos0] == 0)
+                        {
+                            switch (pos0)
+                            {
+                                case 0:
+                                    return 3;
+                                case 1:
+                                    return 6;
+                                case 2:
+                                    return 9;
+                            }
+                        }
+                    }
+                    /// Diagonal Counters ///
+                    working = new int[] { p_grid[0], p_grid[4], p_grid[8] };
+                    working1 = new int[] { ai_grid[0], ai_grid[4], ai_grid[8] };
+                    if (working.Sum() == 2)
+                    {
+                        pos0 = Array.FindIndex(working, e => e == 0);
+                        if (working1[pos0] == 0)
+                        {
+                            switch (pos0)
+                            {
+                                case 0:
+                                    return 1;
+                                case 1:
+                                    return 5;
+                                case 2:
+                                    return 9;
+                            }
+                        }
+                    }
+                    working = new int[] { p_grid[2], p_grid[4], p_grid[6] };
+                    working1 = new int[] { ai_grid[2], ai_grid[4], ai_grid[6] };
+                    if (working.Sum() == 2)
+                    {
+                        pos0 = Array.FindIndex(working, e => e == 0);
+                        if (working1[pos0] == 0)
+                        {
+                            switch (pos0)
+                            {
+                                case 0:
+                                    return 3;
+                                case 1:
+                                    return 5;
+                                case 2:
+                                    return 7;
+                            }
+                        }
+                    }
+                }
+                List<Button> empty = new List<Button>();
+                foreach (Button btn in panel1.Controls)
+                {
+                    if (btn.Text == "")
+                    {
+                        empty.Add(btn);
+                    }
+                }
+                int len_empty = empty.Count;
+                Random rnd1 = new Random();
+                int random1 = rnd1.Next(0, len_empty);
+                return ButtonToInt(empty[random1]);
             }
             // More AI Difficulties coming soon (maybe)
         }

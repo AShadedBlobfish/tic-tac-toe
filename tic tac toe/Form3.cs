@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-// Program version = 0.1.2
+// Program version = 0.1.2.01
 // File version = 0.1.1.00
 
 namespace tic_tac_toe

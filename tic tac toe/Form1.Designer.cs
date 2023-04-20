@@ -1,6 +1,4 @@
-﻿// Program version = 0.1.1
-
-namespace tic_tac_toe
+﻿namespace tic_tac_toe
 {
     partial class Form1
     {

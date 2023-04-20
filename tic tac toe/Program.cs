@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-// Program version = 0.1.2
+// Program version = 0.1.2.01
 
 namespace tic_tac_toe
 {
